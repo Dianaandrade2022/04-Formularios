@@ -1,95 +1,110 @@
-<script>
-import ProgressBar from './ProgressBar.vue';
-import TotalProyectos from './TotalProyectos.vue';
-    export default{
-    data: () => ({
-        proyecto: "",
-        tipo: "",
-        urgente: false,
-        proyectos: [],
-        numeroProyectos: 0,
-    }),
-    methods: {
-        registrarProyecto() {
-            const proyecto = {
-                proyecto: this.proyecto,
-                tipo: this.tipo,
-                urgente: this.urgente,
-                completado: false,
-            };
-            this.proyectos.push(proyecto);
-            this.proyecto = "";
-            this.tipo = "";
-            this.urgente = false;
-        },
-        cambiarEstado(proyecto, campo) {
-            // this.proyectos[id].urgente = !this.proyectos[id].urgente;
-            //console.log(proyecto,campo);
-            proyecto[campo] = !proyecto[campo];
-        }
-    },
-    computed: {
-        numeroProyectos() {
-            return this.proyectos.length;
-        },
-        porcentaje() {
-            let completados = 0;
-            this.proyectos.map(proyecto => {
-                if (proyecto.completado)
-                    completados++;
-            })
-            return (completados*100)/this.numeroProyectos||0;
-        },
-    },
-    components: { ProgressBar, TotalProyectos }
-};
-</script>
 <template>
 
     <div class="row">
         <div class="col-12 mb-4">
             <progress-bar :porcentaje="porcentaje"/>
-            
         </div>
-
-
-        <div class="col-12 col-md-5">
-            <form @submit.prevent="registrarProyecto">
+        
+        <div class="col-12 col-md-4">
+            <form @submit.prevent="registrarproyecto">
                 <div class="mb-3">
                 <label  class="form-label">Proyecto</label>
-                <input v-model.trim="proyecto" type="text" class="form-control" required />
+                <input v-model.trim="proyecto" type="text" class="form-control" required/>
                 </div>
 
         <div class="mb-3">
             <label  class="form-label">Actividad</label>
-            <select v-model="tipo" class="form-select" required>
+            <select v-model.trim="tipo" class="form-select" required>
             <option disabled selected value="">Selecciona un tipo de actividad</option>
-            <option>Aplicaciones Wen con Vue.js</option>
-            <option>Backend Services con Node.js</option>
-            <option>App móvil con React Native</option>
+            <option value="1">Aplicaciones Wen con Vue.js</option>
+            <option value="2">Backend Services con Node.js</option>
+            <option value="3">App móvil con React Native</option>
         </select>
       </div>
 
       <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-check-label">Urgente</label>
-        <input v-model="urgente" type="checkbox" class="form-check-input"/>
+        <label for="exampleInputPassword1" class="form-check-label m-1">Urgente</label>
+        <input v-model.trim="urgente" type="checkbox" class="form-check-input m-2"/>
       </div>
 
-
+holiis
       <button type="submit" class="btn btn-primary">Guardar</button>
+      
     </form>
+    
         </div>
 
-        <div class="col-12 col-md-7">
-            <total-proyectos :numeroProyectos="numeroProyectos" :proyectos="proyectos" :cambiarEstado="cambiarEstado"/>
-    <!-- <pre>
-        {{ proyecto }}
-        {{ tipo }}
-        {{ urgente }}
-    </pre> -->
-
+        <div class="col-12 col-md-8">
+            <total-proyectos :numeroProyectos="numeroProyectos" 
+            :proyectos="proyectos" 
+            :cambiarEstado="cambiarEstado"
+            :limpiarData="limpiarData"/>
+            
         </div>
     </div>
     
 </template>
+
+<script>
+
+import TotalProyectos from './TotalProyectos.vue';
+import ProgressBar from './ProgressBar.vue';
+    export default{
+        data: () => ({
+                proyecto: "",
+                tipo: "",
+                urgente: false,
+                proyectos: [],
+                numeroProyectos: 0,
+                
+            }),
+            methods: {
+                registrarproyecto() {
+                    const proyecto = {
+                        proyecto: this.proyecto,    
+                        tipo: this.tipo,
+                        urgente: this.urgente,
+                        completado: false,
+                    };
+                    this.proyectos.push(proyecto);
+                    this.numeroProyectos++;
+                    this.proyecto = "",
+                    this.tipo = "",
+                    this.urgente = false;
+                
+            },
+            cambiarEstado(proyecto,campo) {
+                //this.proyectos[id].urgente = !this.proyectos[id].urgente;
+                proyecto[campo] = !proyecto[campo];
+                this.saveData();
+            },
+            limpiarData(){
+          this.proyectos = [];
+          localStorage.clear();
+        },
+        },
+            computed: {
+                numeroProyectos() {
+                    return this.proyectos.length
+                },
+                porcentaje() {
+                    let completados = 0;
+                    this.proyectos.map(proyecto => {
+                        if (proyecto.completado)
+                            completados++;
+                    });
+                    return (completados * 100) / this.numeroProyectos || 0; 
+                },
+                mounted(){
+            this.proyectos =  JSON.parse(localStorage.getItem("proyectos"))
+      },
+            },
+            
+
+            components: {
+                TotalProyectos,
+                ProgressBar
+            }
+};
+</script>
 
