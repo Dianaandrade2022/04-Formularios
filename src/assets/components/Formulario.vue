@@ -27,7 +27,6 @@
         <input v-model.trim="urgente" type="checkbox" class="form-check-input m-2"/>
       </div>
 
-holiis
       <button type="submit" class="btn btn-primary">Guardar</button>
       
     </form>
