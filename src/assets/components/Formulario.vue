@@ -77,14 +77,17 @@ import ProgressBar from './ProgressBar.vue';
                 proyecto[campo] = !proyecto[campo];
                 this.saveData();
             },
+            saveData(){
+                localStorage.setItem("proyectos", JSON.stringify(this.proyectos));
+            },
             limpiarData(){
-          this.proyectos = [];
+                this.proyectos = [];
           localStorage.clear();
         },
         },
             computed: {
                 numeroProyectos() {
-                    return this.proyectos.length
+                    return this.proyectos.length;
                 },
                 porcentaje() {
                     let completados = 0;
@@ -94,9 +97,9 @@ import ProgressBar from './ProgressBar.vue';
                     });
                     return (completados * 100) / this.numeroProyectos || 0; 
                 },
-                mounted(){
-            this.proyectos =  JSON.parse(localStorage.getItem("proyectos"))
-      },
+                mounted (){ 
+                this.proyectos = JSON.parse(localStorage.getItem("proyectos")) ||  [] ;
+            },
             },
             
 
